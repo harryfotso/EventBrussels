@@ -11,7 +11,7 @@ import SwiftUI
 struct EventBrusselsApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            BottomBarView().environmentObject(EventListViewModel())
         }
     }
 }

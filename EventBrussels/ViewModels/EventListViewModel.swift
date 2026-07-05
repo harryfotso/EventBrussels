@@ -6,3 +6,21 @@
 //
 
 import Foundation
+import SwiftUI
+import Combine
+
+
+class EventListViewModel: ObservableObject {
+    
+    @Published var events: [EventModel] = []
+    
+    private let eventService = EventService()
+    
+    init() {
+        getEvents()
+    }
+    
+    func getEvents() {
+        events = eventService.loadEvents()
+    }
+}

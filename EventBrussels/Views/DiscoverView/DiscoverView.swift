@@ -12,12 +12,20 @@ struct DiscoverView: View {
     @EnvironmentObject var eventListViewModel: EventListViewModel
     
     var body: some View {
-       ZStack {
-
+        ZStack{
+            List {
+                ForEach(eventListViewModel.events) { event in
+                    ListRowView(event: event)
+                }
+            }
         }
+        .navigationTitle("Events")
     }
 }
 
+
 #Preview {
-    DiscoverView()
+    NavigationView{
+        DiscoverView().environmentObject(EventListViewModel())
+    }
 }
