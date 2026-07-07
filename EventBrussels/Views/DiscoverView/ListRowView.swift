@@ -47,7 +47,7 @@ struct ListRowView: View {
             EventImageView(event: event, height: 250, iconSize: 64)
             
             LinearGradient(
-                colors: [.clear, .black.opacity(0.68)],
+                colors: [.clear, .black.opacity(0.40)],
                 startPoint: .center,
                 endPoint: .bottom
             )

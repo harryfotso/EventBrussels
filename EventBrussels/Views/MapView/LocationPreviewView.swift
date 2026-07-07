@@ -11,30 +11,63 @@ struct LocationPreviewView: View {
     let event: EventModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            EventImageView(
-                event: event,
-                height: 120,
-                cornerRadius: 16,
-                iconSize: 42
-            )
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(event.title)
-                    .font(.headline)
-                    .lineLimit(1)
-                
-                Text(event.locationName)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+        HStack(alignment: .bottom, spacing: 0) {
+            VStack(alignment: .leading, spacing: 16) {
+                imageSection
+                titleSection
+            }
+            VStack (spacing: 8){
+                learnMoreButton
+                nextButton
             }
         }
-        .padding(12)
-        .background(.background)
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: 6)
-        .padding()
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 10).fill(.ultraThinMaterial).offset(y: 65)
+        ).cornerRadius(10)
+    }
+}
+
+
+extension LocationPreviewView {
+    private var imageSection: some View {
+        ZStack {
+            EventImageView(
+                event: event,
+                width: 100,
+                height: 100,
+                cornerRadius: 10,
+                iconSize: 42.5
+            )
+        }
+        .padding(6)
+        .background(Color.white)
+        .cornerRadius(10)
+    }
+    
+    private var titleSection: some View {
+        VStack (alignment: .leading, spacing: 4){
+            Text(event.title).font(.title2).fontWeight(.bold)
+            Text(event.locationName).font(.subheadline)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+    private var learnMoreButton: some View {
+        Button {
+        } label: {
+            Text("Details").font(.headline).frame(width: 125, height: 35)
+        }
+        .buttonStyle(.borderedProminent)
+    }
+    
+    private var nextButton: some View {
+        Button {
+        } label: {
+            Text("Next").font(.headline).frame(width: 125, height: 35)
+        }
+        .buttonStyle(.bordered)
+
     }
 }
 
@@ -57,5 +90,5 @@ struct LocationPreviewView: View {
             imageURL: nil,
             websiteURL: nil
         )
-    )
+    ).padding()
 }

@@ -38,13 +38,26 @@ struct ListRowSavedView: View {
     }
     
     private var thumbnail: some View {
-        EventImageView(
-            event: event,
-            width: 80,
-            height: 80,
-            cornerRadius: 12,
-            iconSize: 34
-        )
+        AsyncImage(url: event.imageURL) { phase in
+            switch phase {
+            case .empty:
+                placeholderImage
+                    .overlay {
+                        ProgressView()
+                            .tint(.white)
+                    }
+            case .success(let image):
+                image
+                    .resizable()
+                    .scaledToFill()
+            case .failure:
+                placeholderImage
+            @unknown default:
+                placeholderImage
+            }
+        }
+        .frame(width: 80, height: 80)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
     
     private var eventInfo: some View {
@@ -74,6 +87,20 @@ struct ListRowSavedView: View {
         Image(systemName: "chevron.right")
             .font(.title2.bold())
             .foregroundStyle(.secondary)
+    }
+    
+    private var placeholderImage: some View {
+        ZStack {
+            LinearGradient(
+                colors: [.blue.opacity(0.75), .green.opacity(0.65)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            
+            Image(systemName: event.category.systemImage)
+                .font(.system(size: 34, weight: .bold))
+                .foregroundStyle(.white.opacity(0.85))
+        }
     }
     
     private var formattedDateLocation: String {
