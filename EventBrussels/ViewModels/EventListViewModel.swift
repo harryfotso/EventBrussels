@@ -13,6 +13,7 @@ import Combine
 class EventListViewModel: ObservableObject {
     
     @Published var events: [EventModel] = []
+    @Published public var savedEventIDs: Set<UUID> = []
     
     private let eventService = EventService()
     
@@ -22,5 +23,17 @@ class EventListViewModel: ObservableObject {
     
     func getEvents() {
         events = eventService.loadEvents()
+    }
+    
+    func isSaved(_ event: EventModel) -> Bool {
+        savedEventIDs.contains(event.id)
+    }
+    
+    func toggleSaved(_ event: EventModel) {
+        if savedEventIDs.contains(event.id) {
+            savedEventIDs.remove(event.id)
+        } else {
+            savedEventIDs.insert(event.id)
+        }
     }
 }

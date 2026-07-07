@@ -25,59 +25,46 @@ struct ListRowSavedView: View {
     }
     
     private var rowContent: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 12) {
             thumbnail
             eventInfo
-            Spacer(minLength: 8)
+            Spacer(minLength: 6)
             chevron
         }
-        .padding(14)
+        .padding(10)
         .background(.background)
-        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 6)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 5)
     }
     
     private var thumbnail: some View {
-        AsyncImage(url: event.imageURL) { phase in
-            switch phase {
-            case .empty:
-                placeholderImage
-                    .overlay {
-                        ProgressView()
-                            .tint(.white)
-                    }
-            case .success(let image):
-                image
-                    .resizable()
-                    .scaledToFill()
-            case .failure:
-                placeholderImage
-            @unknown default:
-                placeholderImage
-            }
-        }
-        .frame(width: 128, height: 128)
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        EventImageView(
+            event: event,
+            width: 80,
+            height: 80,
+            cornerRadius: 12,
+            iconSize: 34
+        )
     }
     
     private var eventInfo: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 4) {
             Circle()
                 .fill(.green)
-                .frame(width: 14, height: 14)
+                .frame(width: 12, height: 12)
             
             Text(event.title)
-                .font(.title2.bold())
+                .font(.headline.bold())
                 .foregroundStyle(.primary)
                 .lineLimit(1)
             
             Text(formattedDateLocation)
-                .font(.title3)
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
             
             Text(priceText)
-                .font(.title3.bold())
+                .font(.headline.bold())
                 .foregroundStyle(.red.opacity(0.8))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -85,22 +72,8 @@ struct ListRowSavedView: View {
     
     private var chevron: some View {
         Image(systemName: "chevron.right")
-            .font(.title.bold())
+            .font(.title2.bold())
             .foregroundStyle(.secondary)
-    }
-    
-    private var placeholderImage: some View {
-        ZStack {
-            LinearGradient(
-                colors: [.blue.opacity(0.75), .green.opacity(0.65)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            
-            Image(systemName: event.category.systemImage)
-                .font(.system(size: 44, weight: .bold))
-                .foregroundStyle(.white.opacity(0.85))
-        }
     }
     
     private var formattedDateLocation: String {

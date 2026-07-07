@@ -7,40 +7,50 @@
 
 import SwiftUI
 
-struct BottomBarView: View {
-    var body: some View {
-        Group {
-            if #available(iOS 26, *){
-                NativeTabView()
-            } else {
-                NativeTabView()
-            }
-        }
-    }
-    
-    @ViewBuilder
-    func NativeTabView() -> some View {
-        TabView {
-            Tab.init("Discover", systemImage: "safari.fill"){
-                NavigationStack {
-                    DiscoverView()
-                }
-            }
-            Tab.init("Map", systemImage: "map.fill"){
-                NavigationStack {
-                    MapView()
-                }
-            }
-            Tab.init("Saved", systemImage: "heart.fill"){
-                NavigationStack {
-                    SavedView()
-                }
-            }
-            Tab.init("Settings", systemImage: "gearshape.fill"){
-                NavigationStack {
+enum AppTab {
+    case discover
+    case map
+    case saved
+    case settings
+}
 
-                }
+struct BottomBarView: View {
+    @State private var selectedTab: AppTab = .discover
+    
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            NavigationStack {
+                DiscoverView()
             }
+            .tabItem {
+                Label("Discover", systemImage: "safari.fill")
+            }
+            .tag(AppTab.discover)
+            
+            NavigationStack {
+                MapView()
+            }
+            .tabItem {
+                Label("Map", systemImage: "map.fill")
+            }
+            .tag(AppTab.map)
+            
+            NavigationStack {
+                SavedView(selectedTab: $selectedTab)
+            }
+            .tabItem {
+                Label("Saved", systemImage: "heart.fill")
+            }
+            .tag(AppTab.saved)
+            
+            NavigationStack {
+                Text("Settings")
+                    .navigationTitle("Settings")
+            }
+            .tabItem {
+                Label("Settings", systemImage: "gearshape.fill")
+            }
+            .tag(AppTab.settings)
         }
     }
 }

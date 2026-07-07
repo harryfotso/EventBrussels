@@ -12,6 +12,7 @@ struct ListRowView: View {
     let event: EventModel
     
     @EnvironmentObject private var eventListViewModel: EventListViewModel
+    @State private var isShowingDetail = false
     
     private var isSaved: Bool {
         eventListViewModel.isSaved(event)
@@ -19,7 +20,9 @@ struct ListRowView: View {
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            NavigationLink(destination: EventDetailView(event: event)) {
+            Button {
+                isShowingDetail = true
+            } label: {
                 VStack(spacing: 0) {
                     imageHeader
                     bottomInfo
@@ -34,31 +37,14 @@ struct ListRowView: View {
                 .padding(20)
         }
         .padding(.vertical, 8)
+        .navigationDestination(isPresented: $isShowingDetail) {
+            EventDetailView(event: event)
+        }
     }
     
     private var imageHeader: some View {
         ZStack(alignment: .bottomLeading) {
-            AsyncImage(url: event.imageURL) { phase in
-                switch phase {
-                case .empty:
-                    placeholderImage
-                        .overlay {
-                            ProgressView()
-                                .tint(.white)
-                        }
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                case .failure:
-                    placeholderImage
-                @unknown default:
-                    placeholderImage
-                }
-            }
-            .frame(height: 250)
-            .frame(maxWidth: .infinity)
-            .clipped()
+            EventImageView(event: event, height: 250, iconSize: 64)
             
             LinearGradient(
                 colors: [.clear, .black.opacity(0.68)],
@@ -87,7 +73,7 @@ struct ListRowView: View {
     private var bottomInfo: some View {
         HStack {
             Label(formattedDate, systemImage: "calendar")
-                .font(.title3.weight(.semibold))
+                .font(.title3)
                 .foregroundStyle(.primary)
             
             Spacer()
@@ -96,10 +82,10 @@ struct ListRowView: View {
                 .font(.title3.bold())
                 .foregroundStyle(.white)
                 .padding(.horizontal, 22)
-                .frame(height: 54)
+                .frame(height: 34)
                 .background(.black, in: Capsule())
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 16)
         .padding(.vertical, 20)
     }
     
@@ -107,8 +93,8 @@ struct ListRowView: View {
         Label(event.category.displayName, systemImage: event.category.systemImage)
             .font(.headline.bold())
             .foregroundStyle(.white)
-            .padding(.horizontal, 16)
-            .frame(height: 44)
+            .padding(.horizontal, 25)
+            .frame(height: 40)
             .background(.green, in: Capsule())
     }
     
@@ -119,25 +105,11 @@ struct ListRowView: View {
             Image(systemName: isSaved ? "heart.fill" : "heart")
                 .font(.title2.bold())
                 .foregroundStyle(.white)
-                .frame(width: 58, height: 58)
+                .frame(width: 48, height: 48)
                 .background(.black.opacity(0.35), in: Circle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(isSaved ? "Remove from saved" : "Add to saved")
-    }
-    
-    private var placeholderImage: some View {
-        ZStack {
-            LinearGradient(
-                colors: [.blue.opacity(0.75), .green.opacity(0.65)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            
-            Image(systemName: event.category.systemImage)
-                .font(.system(size: 64, weight: .bold))
-                .foregroundStyle(.white.opacity(0.85))
-        }
     }
     
     private var formattedDate: String {
@@ -153,50 +125,6 @@ struct ListRowView: View {
         formatter.dateFormat = "E d MMM · HH:mm"
         return formatter
     }()
-}
-
-private extension EventCategory {
-    var displayName: String {
-        switch self {
-        case .sport: return "Sports"
-        case .culture: return "Culture"
-        case .concert: return "Concert"
-        case .nightlife: return "Nightlife"
-        case .conference: return "Conference"
-        case .kids: return "Kids"
-        case .student: return "Student"
-        case .family: return "Family"
-        case .festival: return "Festival"
-        case .art: return "Art"
-        case .workshop: return "Workshop"
-        case .food: return "Food"
-        case .charity: return "Charity"
-        case .education: return "Education"
-        case .game: return "Game"
-        case .other: return "Other"
-        }
-    }
-    
-    var systemImage: String {
-        switch self {
-        case .sport: return "soccerball"
-        case .culture: return "theatermasks.fill"
-        case .concert: return "music.mic"
-        case .nightlife: return "moon.stars.fill"
-        case .conference: return "person.3.fill"
-        case .kids: return "figure.and.child.holdinghands"
-        case .student: return "graduationcap.fill"
-        case .family: return "house.fill"
-        case .festival: return "sparkles"
-        case .art: return "paintpalette.fill"
-        case .workshop: return "hammer.fill"
-        case .food: return "fork.knife"
-        case .charity: return "heart.circle.fill"
-        case .education: return "book.fill"
-        case .game: return "gamecontroller.fill"
-        case .other: return "star.fill"
-        }
-    }
 }
 
 #Preview {

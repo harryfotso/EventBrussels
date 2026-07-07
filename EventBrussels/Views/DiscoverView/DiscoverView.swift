@@ -12,13 +12,17 @@ struct DiscoverView: View {
     @EnvironmentObject var eventListViewModel: EventListViewModel
     
     var body: some View {
-        ZStack{
-            List {
-                ForEach(eventListViewModel.events) { event in
-                    ListRowView(event: event)
-                }
+        List {
+            ForEach(eventListViewModel.events) { event in
+                ListRowView(event: event)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
             }
         }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color(.systemGroupedBackground))
         .navigationTitle("Events")
     }
 }
