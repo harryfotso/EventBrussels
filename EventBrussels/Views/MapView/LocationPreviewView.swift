@@ -9,6 +9,9 @@ import SwiftUI
 
 struct LocationPreviewView: View {
     let event: EventModel
+    let nextButtonAction: () -> Void
+    
+    @State private var isShowingDetail = false
     
     var body: some View {
         HStack(alignment: .bottom, spacing: 0) {
@@ -25,6 +28,9 @@ struct LocationPreviewView: View {
         .background(
             RoundedRectangle(cornerRadius: 10).fill(.ultraThinMaterial).offset(y: 65)
         ).cornerRadius(10)
+        .navigationDestination(isPresented: $isShowingDetail) {
+            EventDetailView(event: event)
+        }
     }
 }
 
@@ -55,6 +61,7 @@ extension LocationPreviewView {
     
     private var learnMoreButton: some View {
         Button {
+            isShowingDetail = true
         } label: {
             Text("Details").font(.headline).frame(width: 125, height: 35)
         }
@@ -63,6 +70,7 @@ extension LocationPreviewView {
     
     private var nextButton: some View {
         Button {
+            nextButtonAction()
         } label: {
             Text("Next").font(.headline).frame(width: 125, height: 35)
         }
@@ -89,6 +97,7 @@ extension LocationPreviewView {
             ageRestriction: "All ages",
             imageURL: nil,
             websiteURL: nil
-        )
+        ),
+        nextButtonAction: {}
     ).padding()
 }

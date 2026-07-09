@@ -30,8 +30,11 @@ struct EventDetailView: View {
                     Text(event.locationName)
                         .font(.headline)
 
-                    Text(event.address)
-                        .foregroundStyle(.secondary)
+                    NavigationLink {
+                    
+                    } label: {
+                        Text(event.address)
+                    }
 
                     Text(event.isFree ? "Free" : "€\(event.price, specifier: "%.2f")")
                         .fontWeight(.semibold)
