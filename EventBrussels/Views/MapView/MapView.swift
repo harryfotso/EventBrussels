@@ -9,6 +9,9 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
+    
+    @EnvironmentObject private var vm: EventListViewModel
+    
     var body: some View {
         let brusselsPosition = MapCameraPosition.region(
             MKCoordinateRegion(
@@ -16,11 +19,29 @@ struct MapView: View {
                 span: MKCoordinateSpan(latitudeDelta: 0.06, longitudeDelta: 0.06)
             )
         )
-        Map(initialPosition: brusselsPosition)
-            .edgesIgnoringSafeArea(.all)
+        
+        ZStack {
+            Map(initialPosition: brusselsPosition)
+                .ignoresSafeArea()
+            
+            VStack {
+                Spacer()
+                
+                ZStack {
+                    ForEach(vm.events) { event in
+                        LocationPreviewView(event: event)
+                            .shadow(color: Color.black.opacity(0.1), radius: 20)
+                            .padding().transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .trailing),
+                                removal: .move(edge: .leading)))
+                    }
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    MapView()
+    MapView().environmentObject(EventListViewModel())
 }
